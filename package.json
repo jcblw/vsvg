@@ -1,0 +1,25 @@
+{
+  "name": "vsvg-min",
+  "version": "0.0.1",
+  "description": "A minimal implementation of a vdom that allows for quick server or client side rendering of svg's",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/jcblw/vsvg-min"
+  },
+  "keywords": [
+    "svg",
+    "server",
+    "client",
+    "virtualdom"
+  ],
+  "author": "Jacob Lowe",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jcblw/vsvg-min/issues"
+  },
+  "homepage": "https://github.com/jcblw/vsvg-min"
+}
