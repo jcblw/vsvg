@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/jcblw/vsvg-min"
+    "url": "http://github.com/jcblw/vsvg"
   },
   "keywords": [
     "svg",
@@ -19,7 +19,7 @@
   "author": "Jacob Lowe",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jcblw/vsvg-min/issues"
+    "url": "https://github.com/jcblw/vsvg/issues"
   },
-  "homepage": "https://github.com/jcblw/vsvg-min"
+  "homepage": "https://github.com/jcblw/vsvg"
 }
