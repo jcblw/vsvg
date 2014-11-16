@@ -27,10 +27,10 @@ var fs = require( 'fs' ),
 
 style.innerText = '<![CDATA[.st0{fill:#EE67A4;}.st1{fill:#231F20;}.st2{fill:#35BEB8;}]]>';
 
-svg.appendNode( style );
-svg.appendNode( path0 );
-svg.appendNode( path1 );
-svg.appendNode( path2 );
-svg.appendNode( path3 );
+svg.appendChild( style );
+svg.appendChild( path0 );
+svg.appendChild( path1 );
+svg.appendChild( path2 );
+svg.appendChild( path3 );
 
 fs.writeFile( './examples/hello.svg', svg.toHTML(), console.log.bind( console ) );

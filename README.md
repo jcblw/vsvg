@@ -36,7 +36,7 @@ style.innerText = '.my-class{ stoke-width: 5px; }'; // set inner text
 style.setAttribute( 'type', 'text/css' );
 conosle.log( style.getAttibute( 'type' ) ); // text/css
 
-svg.appendNode( line ); // append node to another node
+svg.appendChild( line ); // append node to another node
 svg.insertBefore( style, line ); // append node before another node
 
 console.log( svg.outerHTML ); /* <svg xmlns="http://www.w3.org/2000/svg" width="130" height="120" class="bar" ><style  type="text/css" >.my-class{ stoke-width: 5px; }</style><line  x1="0" y1="0" x2="100" y2="100" class="my-class" style="stroke:black;" ></line></svg> */

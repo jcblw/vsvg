@@ -98,7 +98,7 @@ function tag( tagName, _attributes ) {
             }
             children.splice( index, 1 );
         },
-        appendNode: function ( elem ) {
+        appendChild: function ( elem ) {
             _elem.removeChild( elem ); // remove any old instances
             elem.parentNode = _elem;
             children.push( elem );
