@@ -1,4 +1,4 @@
-# vsvg ( virtual SVG )
+# vsvg ( virtual SVG ) [![Build Status](https://travis-ci.org/jcblw/vsvg.svg?branch=master)](https://travis-ci.org/jcblw/vsvg)
 
 vsvg is a small lib that allow you to create svg's server side or client side. Its still in early devlopment so expect bug and file issues.
 
