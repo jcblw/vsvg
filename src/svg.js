@@ -75,7 +75,7 @@ function getElementIndex( elem, arr ) {
 function tag( tagName, _attributes ) {
     var ns = tagName === 'svg' ? 'xmlns="http://www.w3.org/2000/svg" ' : ' ',
         children = [],
-        attributes = Object.create( _attributes ),
+        attributes = Object.create( _attributes || {} ),
         styles = {};
 
 
