@@ -1,74 +1,17 @@
-/*
-    tag - a list of tags that gets split into an array
-*/
 
-var tags = 'a,altGlyph,altGlyphDef,altGlyphItem,animate,animateColor,animateMotion,animateTransform,circle,clipPath,color-profile,cursor,defs,desc,ellipse,feBlend,feColorMatrix,feComponentTransfer,feComposite,feConvolveMatrix,feDiffuseLighting,feDisplacementMap,feDistantLight,feFlood,feFuncA,feFuncB,feFuncG,feFuncR,feGaussianBlur,feImage,feMerge,feMergeNode,feMorphology,feOffset,fePointLight,feSpecularLighting,feSpotLight,feTile,feTurbulence,filter,font,font-face,font-face-format,font-face-name,font-face-src,font-face-uri,foreignObject,g,glyph,glyphRef,hkern,image,line,linearGradient,marker,mask,metadata,missing-glyph,mpath,path,pattern,polygon,polyline,radialGradient,rect,script,set,stop,style,svg,switch,symbol,text,textPath,title,tref,tspan,use,view,vkern'.split(',');
-
-/*
-    s4 & guid - makes a unique idenifier for elements
-*/
-
-function s4( ) {
-    return Math.floor( ( 1 + Math.random( ) ) * 0x10000 )
-        .toString( 16 )
-        .substring( 1 );
-}
-
-function guid( ) {
-    return s4( ) + s4( ) + '-' + s4( ) + '-' + s4( ) + '-' +
-        s4( ) + '-' + s4( ) + s4( ) + s4( );
-}
-
-/*
-    objToStyle - compiles { key: value } to key:value;
-*/
-
-function objToStyles( styles ) {
-    var ret = '';
-    for ( var prop in styles ) {
-        ret += prop + ':' + styles[ prop ] + ';';
-    }
-    return ret;
-}
-
-/*
-    objToAttribute - compiles { key: value } to key="value"
-*/
-
-function objToAttributes( attributes ) {
-    var ret = '',
-        value;
-    for( var attr in attributes ) {
-        value = attr === 'style' ? objToStyles( attributes[ attr ] ) : attributes[ attr ];
-        ret += attr + '="' + value + '" ';
-    }
-    return ret;
-}
-
-/*
-    mapElementsToHTML - to be use with arr.map with run toHTML of each element
-*/
-
-function mapElementsToHTML( elem ) {
-    return elem.toHTML();
-}
-
-/*
-    getElementIndex - get the index of the element in an array
-*/
-
-function getElementIndex( elem, arr ) {
-    var index = -1;
-    arr.forEach( function( _elem, _index ) {
-        if ( elem.guid === _elem.guid ) {
-            index = _index;
-        }
-    } );
-    return index;
-}
+var utils = require( './utils' ),
+    tags = require( './tags' );
 
 /*
     tag - creates an element
+    params
+        tagName { String } - name of tag to create
+        _attribute { Object } - an object with attribute declarations
+    returns
+        _elem { _elem Object } - an object with a number of methods to
+            manipulate element
+
+    TODO make toHTML serve back self closing tags 
 */
 
 // might be best to turn this into a instance
@@ -84,15 +27,15 @@ function tag( tagName, _attributes ) {
     */
 
     var _elem = {
-        guid: guid(),
+        guid: utils.guid(),
         parentNode: null,
         children: children,
         insertBefore: function ( elem, refElem ) {
-            var index = getElementIndex( refElem, _elem.children );
+            var index = utils.getElementIndex( refElem, _elem.children );
             _elem.children.splice( index, 0, elem );
         },
         removeChild: function ( elem ) {
-            var index = getElementIndex( elem, children );
+            var index = utils.getElementIndex( elem, children );
             if ( index === -1 ) {
                 return;
             }
@@ -108,9 +51,9 @@ function tag( tagName, _attributes ) {
                 tagName + 
                 ' ' + 
                 ns + 
-                objToAttributes( attributes || {} ) + 
+                utils.objToAttributes( attributes || {} ) + 
                 '>' + 
-                children.map( mapElementsToHTML ).join('') +
+                children.map( utils.mapElementsToHTML ).join('') +
                 '</' +
                 tagName +
                 '>';
@@ -128,7 +71,7 @@ function tag( tagName, _attributes ) {
             return _elem.toHTML();
         },
         get innerHTML () {
-            return children.map( mapElementsToHTML ).join('');
+            return children.map( utils.mapElementsToHTML ).join('');
         },
         set innerText ( value ) {
             children.length = 0; // empty array
