@@ -4,7 +4,7 @@
   "description": "A minimal implementation of a vdom that allows for quick server or client side rendering of svg's",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "faucet"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/jcblw/vsvg",
   "devDependencies": {
+    "faucet": "0.0.1",
     "tape": "^3.0.3"
   }
 }
