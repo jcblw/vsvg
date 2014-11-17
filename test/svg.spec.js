@@ -74,8 +74,8 @@ test( 'testing element::insertBefore', function( t ) {
 
     svg.insertBefore( group, group2 );
 
-    // this currently fails in DOM spec there is an error thrown with this call 
-    // t.equals( svg.children.length, 3, 'not elements are added if items are already in children' );    
+    // this should probably throw instead 
+    t.equals( svg.children.length, 3, 'not elements are added if items are already in children' );    
 
     t.end();
 } );

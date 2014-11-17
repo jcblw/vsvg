@@ -32,6 +32,7 @@ function tag( tagName, _attributes ) {
         children: children,
         insertBefore: function ( elem, refElem ) {
             var index = utils.getElementIndex( refElem, _elem.children );
+            _elem.removeChild( elem ); // this needs to be revised to be more like normal html spec
             _elem.children.splice( index, 0, elem );
         },
         removeChild: function ( elem ) {
