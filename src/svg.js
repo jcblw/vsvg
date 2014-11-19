@@ -1,6 +1,7 @@
 
-var utils = require( './utils' ),
-    tags = require( './tags' ),
+'use strict';
+
+var tags = require( './tags' ),
     SvgNode = require( './svgNode' );
 
 /*

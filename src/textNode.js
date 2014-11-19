@@ -1,7 +1,9 @@
 
+'use strict';
+
 var utils = require( './utils' );
 
-module.exports = TextNode 
+module.exports = TextNode;
 
 function TextNode ( text, options ) {
     if ( !( this instanceof TextNode ) ) { // magical invocation
@@ -13,6 +15,6 @@ function TextNode ( text, options ) {
 
 TextNode.prototype = {
     toHTML: function( ) {
-        return this.text
+        return this.text;
     }
 };

@@ -1,4 +1,6 @@
 
+'use strict';
+
 var utils = require( './utils' ),
     TextNode = require( './textNode' );
 
@@ -68,8 +70,8 @@ SvgNode.prototype = {
     get attributes ( ) {
         return this._attributes;
     },
-    set attributes ( ) {
-        return; // block from directly setting
+    set attributes ( value ) {
+        return value; // block from directly setting
     },
     get outerHTML () {
         return this.toHTML();
@@ -77,13 +79,13 @@ SvgNode.prototype = {
     get innerHTML () {
         return this.children.map( utils.mapElementsToHTML ).join('');
     },
+    get innerText () {
+        return this.children.map( utils.mapElementsToHTML ).join('');
+    },
     set innerText ( value ) {
         this.children.length = 0; // empty array
         this.children.push( new TextNode( value, {
             unsafe: this.tagName === 'style' 
         } ) ); // style tags need no escape
-    },
-    set innerHTML ( value ) {
-        // need parser
     }
 };
