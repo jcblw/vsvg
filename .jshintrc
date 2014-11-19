@@ -1,0 +1,9 @@
+{
+    "node": true,
+    "undef": true,
+    "unused": true,
+    "esnext": true,
+    "predef": [ "require", "module" ],
+    "globalstrict": true,
+    "trailing": true
+}

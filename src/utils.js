@@ -1,3 +1,6 @@
+
+'use strict';
+
 /*
     s4 & guid - makes a unique idenifier for elements
 */
