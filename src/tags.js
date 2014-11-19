@@ -72,7 +72,7 @@ module.exports = [
     "set",
     "stop",
     "style",
-    "svg",
+    //"svg", this is a special case
     "switch",
     "symbol",
     "text",
