@@ -56,7 +56,7 @@ exports.objToAttributes = function objToAttributes( attributes ) {
 /*
     mapElementsToHTML - to be use with arr.map with run toHTML of each element
     params
-        elem { _elem Object } - object created by calling tag().
+        elem { SvgNode Object } - object created by calling tag().
     returns
         html { String } - compiled elem object
 */
@@ -68,10 +68,10 @@ exports.mapElementsToHTML = function mapElementsToHTML( elem ) {
 /*
     getElementIndex - get the index of the element in an array
     params
-        elem { _elem Object } - object created by calling tag().
-        arr { Array } - a collections of _elem Objects
+        elem { SvgNode Object } - object created by calling tag().
+        arr { Array } - a collections of SvgNode Objects
     returns
-        index { Number } - the index of _elem obj in collection
+        index { Number } - the index of SvgNode obj in collection
 */
 
 exports.getElementIndex = function getElementIndex( elem, arr ) {
@@ -82,4 +82,21 @@ exports.getElementIndex = function getElementIndex( elem, arr ) {
         }
     } );
     return index;
+};
+
+/*
+    escapeHTML - escapes HTML
+    params
+        html { String } - unescaped html
+    returns
+        text { String } - escaped html
+*/
+
+exports.escapeHTML = function escapeHTML( html ) {
+  return String( html )
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 };
