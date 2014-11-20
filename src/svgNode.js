@@ -58,7 +58,23 @@ SvgNode.prototype = {
         if ( index === -1 ) {
             return;
         }
-        this.children.splice( index, 1 );
+        this.children.splice( index, 1 ); 
+    },
+
+    /*
+        SvgNode::replaceChild - removes a child element from child array and add a new one
+        params
+            elem { SvgNode } - an exsisting child element to be removed
+            replaceElem { SvgNode } - an element to replace removed elem
+    */
+
+
+    replaceChild: function ( elem, replaceElem ) {
+        var index = utils.getElementIndex( elem, this.children );
+        if ( index === -1 ) {
+            return;
+        }
+        this.children.splice( index, 1, replaceElem ); 
     },
 
     /*
@@ -71,6 +87,16 @@ SvgNode.prototype = {
         this.removeChild( elem ); // remove any old instances
         elem.parentNode = this;
         this.children.push( elem );
+    },
+
+    /*
+        SvgNode::firstChild [ getter ] 
+        returns 
+            child { SvgNode } - first child or null
+    */
+
+    get firstChild ( ) {
+        return this.children[ 0 ];
     },
 
     /*
