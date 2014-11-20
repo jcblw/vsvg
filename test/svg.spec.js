@@ -59,6 +59,23 @@ test( 'testing element::removeChild', function( t ) {
     t.end();
 } );
 
+test( 'testing element::replaceChild', function( t ) {
+    var svg = vsvg.svg(),
+        group = vsvg.g(),
+        group2 = vsvg.g(),
+        defs = vsvg.defs();
+
+    svg.appendChild( defs );
+    svg.appendChild( group );
+    svg.replaceChild( group, group2 );
+
+    t.equals( svg.children.length, 2, 'svg has two child elements' );
+    t.equals( svg.children[1].guid, group2.guid, 'the correct child was replaced' );
+
+    t.end();
+} );
+
+
 test( 'testing element::insertBefore', function( t ) {
     var svg = vsvg.svg(),
         group = vsvg.g(),
@@ -79,6 +96,23 @@ test( 'testing element::insertBefore', function( t ) {
 
     t.end();
 } );
+
+test( 'testing element::firstChild', function( t ) {
+    var svg = vsvg.svg(),
+        group = vsvg.g(),
+        defs = vsvg.defs(),
+        first;
+
+    svg.appendChild( defs );
+    svg.appendChild( group );
+
+    first = svg.firstChild;
+
+    t.equals( first.guid, defs.guid, 'the first element is returned' );
+
+    t.end();
+} );
+
 
 test( 'testing element::toHTML', function( t ) {
     var svg = vsvg.svg({
