@@ -76,7 +76,7 @@ SvgNode.prototype = {
     /*
         SvgNode::toHTML - compiles tags for the element and child elements
         returns
-            html { String } - the html ( svg ) compilied to a tring form
+            html { String } - the html ( svg ) compilied to a string form
     */
 
     toHTML: function ( ) {
@@ -89,6 +89,16 @@ SvgNode.prototype = {
             '</' +
             this.tagName +
             '>';
+    },
+
+    /*
+        SvgNode::toText - compiles element inner text nodes to strings
+        returns
+            text { String } - the text inside of elements
+    */
+
+    toText: function( ) {
+        return this.children.map( utils.mapElementsToText ).join('');
     },
 
     /*
@@ -158,12 +168,10 @@ SvgNode.prototype = {
         SvgNode::innerText [ getter ]
         returns 
             html { String } - current does the exact same thing as innerHTML
-
-        TODO only compile down textNodes
     */
 
     get innerText () {
-        return this.children.map( utils.mapElementsToHTML ).join('');
+        return this.toText();
     },
 
     /*

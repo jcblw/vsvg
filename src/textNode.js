@@ -16,5 +16,8 @@ function TextNode ( text, options ) {
 TextNode.prototype = {
     toHTML: function( ) {
         return this.text;
+    },
+    toText: function( ) {
+        return this.text;
     }
 };

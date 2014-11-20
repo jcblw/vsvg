@@ -69,6 +69,18 @@ exports.mapElementsToHTML = function mapElementsToHTML( elem ) {
 };
 
 /*
+    mapElementsToHTML - to be use with arr.map with run toHTML of each element
+    params
+        elem { SvgNode Object } - object created by calling tag().
+    returns
+        html { String } - compiled elem object
+*/
+
+exports.mapElementsToText = function mapElementsToText( elem ) {
+    return elem.toText();
+};
+
+/*
     getElementIndex - get the index of the element in an array
     params
         elem { SvgNode Object } - object created by calling tag().
