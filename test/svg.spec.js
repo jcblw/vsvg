@@ -98,3 +98,27 @@ test( 'testing element::toHTML', function( t ) {
 
     t.end();
 } );
+
+test( 'testing element::toText', function( t ) {
+    var svg = vsvg.svg({
+            version: '1.1'
+        }),
+        text = vsvg.text(),
+        text2 = vsvg.text(),
+        ret;
+
+    text.innerText = 'foo bar';
+    svg.appendChild( text );
+    ret = svg.toText();
+
+    t.equals( typeof ret, 'string', 'svg.toText method returns a string' );
+    t.equals( ret, 'foo bar', 'toText returns expected value' );
+
+    text2.innerText = 'baz qux';
+    svg.appendChild( text2 );
+    ret = svg.toText();
+
+    t.equals( ret, 'foo barbaz qux', 'toText returns expected value' );
+
+    t.end();
+} );
