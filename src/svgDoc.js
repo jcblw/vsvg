@@ -1,4 +1,6 @@
 
+'use strict';
+
 var utils = require( './utils' ),
     tags = require( './tags' ),
     SvgNode = require( './svgNode' );
@@ -20,6 +22,7 @@ function SvgDocument( attributes ) {
 
     SvgNode.call( this, 'svg', attributes );
     this._nodes = []; // collection of nodes in document
+    return this;
 }
 
 
@@ -53,12 +56,14 @@ SvgDocument.prototype._addNode = function( node ) {
 };
 
 SvgDocument.prototype._createNode = function( tagName, attributes ) {
-    this._nodes.push( SvgNode( tagName, attributes ) );
+    var node = new SvgNode( tagName, attributes );
+    this._nodes.push( node );
+    return node;
 };
 
 SvgDocument.prototype._addMethods = function( ) {
     var _this = this;
     tags.forEach( function( tagName ) {
-        _this[ tagName ] = _this._createNode.bind( null, tagName );
+        _this[ tagName ] = _this._createNode.bind( _this, tagName );
     } );
-}
+};
