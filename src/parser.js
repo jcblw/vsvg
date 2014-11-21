@@ -1,9 +1,10 @@
+'use strict';
+
 var startTag = /^<([-A-Za-z0-9_]+)(.*?)(\/?)>/g,
     endTag = /<\/([-A-Za-z0-9_]+)[^>]*>/, // this just matches the first one
     attr = /([-A-Za-z0-9_]+)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
 
-var fs = require( 'fs' );
-var util = require( 'util' );
+exports.parse = parse;
 
 function createTree ( tags ) {
 
@@ -11,12 +12,12 @@ function createTree ( tags ) {
 
     function getArray( position, arr ) {
         var _position = makeArray( position );
-        if ( !(_position.length - 1) ) {
+        if ( _position.length === 1 ) {
             return arr;
         }
         var next = arr[ _position[ 0 ] ].children;
         _position.shift();
-        return getArray( _position, next )
+        return getArray( _position, next );
     }
 
     function addTagToTree( tag ) {
@@ -30,17 +31,17 @@ function createTree ( tags ) {
 }
 
 function makeArray( arr ) {
-    return Array.prototype.slice.call( arr, 0 )
+    return Array.prototype.slice.call( arr, 0 );
 }
 
-function parse( xml, callback ) {
+function parse( xml ) {
 
     xml = xml.replace( /(\r\n|\n|\r)/gm, '' ); // remove all line breaks
 
     var tags = [],
         position = [ 0 ];
 
-    function getLastOpenTag( arr ) {
+    function getLastOpenTag( ) {
        for ( var i = tags.length - 1; i >= 0; i -= 1 ) {
             if ( !tags[ i ].closed ) {
                 return i;
@@ -65,12 +66,11 @@ function parse( xml, callback ) {
         var openTag = xml.match( startTag ),
             attributes,
             end,
-            length,
             text,
-            child,
             index,
             prevTag,
             closed,
+            tagName,
             tag;
 
         if ( openTag ) {
@@ -79,7 +79,6 @@ function parse( xml, callback ) {
             xml = xml.substring( openTag.length ); 
             text = null;
             if ( /\/>$/.test( openTag ) ) {
-                console.log( xml, openTag )
                 closed = true;
             }
         }
@@ -94,15 +93,9 @@ function parse( xml, callback ) {
             }
         }
 
-        var tagName = attributes.shift(); 
-
+        tagName = attributes.shift(); 
 
         if ( tagName || text ) {
-            
-            
-            function getPos( n ) {
-                return n;
-            }
 
             tag = {
                 tagName: tagName,
@@ -132,4 +125,3 @@ function parse( xml, callback ) {
 
     return createTree( tags );
 }
-
