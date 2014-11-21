@@ -2,7 +2,8 @@
 
 var startTag = /^<([-A-Za-z0-9_]+)(.*?)(\/?)>/g,
     endTag = /<\/([-A-Za-z0-9_]+)[^>]*>/, // this just matches the first one
-    attr = /([-A-Za-z0-9_]+)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
+    attr = /([-A-Za-z0-9_]+)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
+    utils = require( './utils' ); 
 
 exports.parse = parse;
 
@@ -11,7 +12,7 @@ function createTree ( tags ) {
     var _tags = [];
 
     function getArray( position, arr ) {
-        var _position = makeArray( position );
+        var _position = utils.makeArray( position );
         if ( _position.length === 1 ) {
             return arr;
         }
@@ -30,8 +31,22 @@ function createTree ( tags ) {
 
 }
 
-function makeArray( arr ) {
-    return Array.prototype.slice.call( arr, 0 );
+function getLastOpenTag( tags ) {
+   for ( var i = tags.length - 1; i >= 0; i -= 1 ) {
+        if ( !tags[ i ].closed ) {
+            return i;
+        }
+   } 
+   return -1;
+}
+
+function getTagIndex( tagName, tags ) {
+    for ( var i = tags.length - 1; i >= 0; i -= 1 ) {
+        if ( tags[i].tagName === tagName ) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function parse( xml ) {
@@ -41,23 +56,6 @@ function parse( xml ) {
     var tags = [],
         position = [ 0 ];
 
-    function getLastOpenTag( ) {
-       for ( var i = tags.length - 1; i >= 0; i -= 1 ) {
-            if ( !tags[ i ].closed ) {
-                return i;
-            }
-       } 
-       return -1;
-    }
-
-    function getTagIndex( tagName ) {
-        for ( var i = tags.length - 1; i >= 0; i -= 1 ) {
-            if ( tags[i].tagName === tagName ) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     while ( xml ) {
 
@@ -86,7 +84,7 @@ function parse( xml ) {
             end = xml.match( endTag );
             attributes = [];
             if ( end ) {
-                index = getTagIndex( end[ 1 ] );
+                index = getTagIndex( end[ 1 ], tags );
                 prevTag = tags[ index ];
                 text = xml.slice( 0, end.index );
                 xml = xml.substring( end.index + end[ 0 ].length );
@@ -102,7 +100,7 @@ function parse( xml ) {
                 attributes: attributes,
                 children: [],
                 text: text,
-                inside: getLastOpenTag(),
+                inside: getLastOpenTag( tags ),
                 closed: closed || !!text
             };
 
@@ -112,7 +110,7 @@ function parse( xml ) {
                 position = position.slice( 0, tags[ tag.inside ].position.length + 1 );
             }
 
-            tag.position = makeArray( position );
+            tag.position = utils.makeArray( position );
             tags.push( tag );
 
         }

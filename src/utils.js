@@ -115,3 +115,15 @@ exports.escapeHTML = function escapeHTML( html ) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 };
+
+/*
+    makeArray - creates a copy of an array
+    params
+        arr { Array } - original array
+    returns
+        arr { Array } - new Array
+*/
+
+exports.makeArray = function makeArray( arr ) {
+    return Array.prototype.slice.call( arr, 0 );
+};
