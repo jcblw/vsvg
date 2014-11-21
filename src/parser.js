@@ -7,6 +7,22 @@ var startTag = /^<([-A-Za-z0-9_]+)(.*?)(\/?)>/g,
 
 exports.parse = parse;
 
+function getAttributes( attributes ) {
+    var _attributes = {};
+
+    function addToAttributes( keyvalue ) {
+        var arr = keyvalue.split( /=/ ),
+            key = arr[ 0 ],
+            value = arr[ 1 ].slice( 1 ).slice( 0, -1 );
+
+        _attributes[ key ] = value;
+    }
+
+    attributes.forEach( addToAttributes );
+
+    return _attributes;
+}
+
 function createTree ( tags ) {
 
     var _tags = [];
@@ -97,7 +113,7 @@ function parse( xml ) {
 
             tag = {
                 tagName: tagName,
-                attributes: attributes,
+                attributes: getAttributes( attributes ),
                 children: [],
                 text: text,
                 inside: getLastOpenTag( tags ),
