@@ -1,5 +1,5 @@
 var test = require( 'tape' ),
-    vsvg = require( '../src/svg' );
+    vsvg = require( '../src/' );
 
 test( 'testing element creation', function( t ) {
     var svg = vsvg.svg();
