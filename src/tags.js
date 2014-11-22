@@ -76,6 +76,7 @@ module.exports = [
     "stop",
     "style",
     "svg",
+    "span",
     "switch",
     "symbol",
     "text",
