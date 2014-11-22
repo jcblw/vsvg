@@ -156,3 +156,26 @@ test( 'testing element::toText', function( t ) {
 
     t.end();
 } );
+
+test( 'testing vsvg::_eachTag', function( t ) {
+    var tags = [{
+            tagName: 'svg',
+            attributes: {
+                version: '1.2'
+            },
+            children : [{
+                tagName: 'line',
+                attributes: {},
+                children: []
+            }]
+        }],
+        elem = vsvg._eachTag( tags[ 0 ] );
+
+
+    t.equals( typeof elem, 'object', 'return from _eachTag is an object' );
+    t.equals( elem.tagName, 'svg', 'return from _eachTag has the correct tag name' );
+    t.equals( typeof elem.guid, 'string', 'return from _eachTag has a guid' );
+    t.equals( elem.children.length, 1, 'return from _eachTag has the correct amount of children' );
+    t.end();
+
+} );
