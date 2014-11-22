@@ -1,9 +1,9 @@
 var fs = require( 'fs' ),
     parser = require( '../src/parser' ),
-    util = require( 'util' ),
+     util = require( 'util' ),
     vsvg = require( '../src/' );
 
-fs.readFile( __dirname + '/letter.svg', { encoding: 'utf8' }, function( err, file ) {
+fs.readFile( __dirname + '/chart.svg', { encoding: 'utf8' }, function( err, file ) {
     if ( err ) throw err;
     var parsed = parser.parse( file );
     // console.log( util.inspect( parsed, { depth: Infinity, colors: true } ) );
@@ -11,9 +11,11 @@ fs.readFile( __dirname + '/letter.svg', { encoding: 'utf8' }, function( err, fil
     var elem = eachTag( parsed[ 0 ] );
     elem.setAttribute( 'vsvg', 'true' );
     
-    fs.writeFile( './examples/converted-letter.svg', elem.toHTML(), console.log.bind( console ) );
+    fs.writeFile( './examples/converted-chart.svg', elem.toHTML(), console.log.bind( console ) );
 
 } );
+
+var colorArray = [ '#b1b2b3', '#5babdd', '#33aa7b', '#2e76a4' ];
 
 function eachTag( tag ) {
     
@@ -31,9 +33,48 @@ function eachTag( tag ) {
             }
         }
 
-        if ( elem.tagName === 'path' && elem.getAttribute( 'fill' ) !== 'none' ) {
-            elem.setAttribute( 'fill', 'tomato' );
+        if ( elem.tagName === 'svg' ) {
+            var rect = vsvg.rect( {
+                width: '981',
+                height: '305',
+                fill: 'white'
+            } );
+            elem.insertBefore( rect, elem.children[ 0 ] );
         }
+
+        if ( elem.tagName === 'polygon' ) {
+            elem.setAttribute( 'fill', '#b1b2b3' );
+        }
+
+        if ( elem.tagName === 'foreignObject' ) {
+            var attributes = elem.attributes;
+            attributes.style = {
+                dx: '100',
+                dy: '100',
+                'font-family': 'sans',
+                padding: '5px'
+            };
+            console.log( attributes );
+            var text = vsvg.text( attributes );
+            text.setAttribute( 'text-anchor', 'start' );
+            text.innerText = elem.innerText;
+            elem = text;
+        }
+
+
+        if ( elem.tagName === 'line' ) {
+            if ( elem.attributes.class === 'ct-bar' ) {
+                elem.setAttribute( 'stroke', colorArray.shift() );
+                elem.setAttribute( 'stroke-width', '5%' );                
+            }
+            else {
+                elem.setAttribute( 'stroke', 'rgba(0,0,0,0.2)' );
+                elem.setAttribute( 'stroke-width', '1' );                
+                elem.setAttribute( 'stroke-dasharray', '2' );
+            }
+        }
+
+
 
         return elem;
     }
