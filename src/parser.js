@@ -132,22 +132,23 @@ function parse( xml ) {
     xml = xml.replace( /(\r\n|\n|\r)/gm, '' ); // remove all line breaks
 
     var tags = [],
-        position = [ 0 ]; // initial position
+        position = [ 0 ], // initial position
+        openTag, 
+        attributes,
+        end,
+        text,
+        index,
+        prevTag,
+        closed,
+        tagName,
+        tag;
 
 
     while ( xml ) { // we carve away at the xml variable
 
         xml = xml.trim(); // there is some issues with open tag if this is not done
 
-        var openTag = xml.match( startTag ), 
-            attributes,
-            end,
-            text,
-            index,
-            prevTag,
-            closed,
-            tagName,
-            tag;
+        openTag = xml.match( startTag );
 
         if ( openTag ) { // if there is an open tag grab the attribute, and remove tag from xml string
             openTag = openTag[ 0 ];
