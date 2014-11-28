@@ -113,6 +113,41 @@ test( 'testing element::firstChild', function( t ) {
     t.end();
 } );
 
+test( 'testing element::children', function( t ) {
+    var svg = vsvg.svg(),
+        group = vsvg.g(),
+        defs = vsvg.defs(),
+        text = {
+            text: 'hello'
+        };
+
+    svg.appendChild( defs );
+    svg.appendChild( group );
+
+    t.equals( svg.children.length, 2, 'the correct amount of element are returned' );
+
+    svg.appendChild( text );
+
+    t.equals( svg.children.length, 2, 'the correct amount of element are returned even when text nodes are present' );
+
+    t.end();
+} );
+
+test( 'testing element::_removeTextNodes', function( t ) {
+    var arr = [
+            vsvg.svg(), 
+            vsvg.g(),
+            {
+                text: 'hello'
+            }
+        ],
+        arr2 = arr.filter( vsvg.svg()._removeTextNodes );
+
+    t.equals( arr.length, 3, 'the correct amount of elements are in the array' );
+    t.equals( arr2.length, 2, 'the correct amount of elements are in the array after the filter' );
+    t.end();
+} );
+
 
 test( 'testing element::toHTML', function( t ) {
     var svg = vsvg.svg({

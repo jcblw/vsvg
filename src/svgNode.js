@@ -26,7 +26,7 @@ function SvgNode( tagName, attributes ) {
 
     this.guid = utils.guid();
     this.tagName = tagName;
-    this.children = [];
+    this._children = [];
     this._attributes = Object.create( attributes || {} );
     this.styles = {};
 }
@@ -41,9 +41,9 @@ SvgNode.prototype = {
     */
 
     insertBefore: function ( elem, refElem ) {
-        var index = utils.getElementIndex( refElem, this.children );
+        var index = utils.getElementIndex( refElem, this._children );
         this.removeChild( elem ); // this needs to be revised to be more like normal html spec
-        this.children.splice( index, 0, elem );
+        this._children.splice( index, 0, elem );
     },
 
     /*
@@ -54,11 +54,11 @@ SvgNode.prototype = {
 
 
     removeChild: function ( elem ) {
-        var index = utils.getElementIndex( elem, this.children );
+        var index = utils.getElementIndex( elem, this._children );
         if ( index === -1 ) {
             return;
         }
-        this.children.splice( index, 1 ); 
+        this._children.splice( index, 1 ); 
     },
 
     /*
@@ -70,11 +70,11 @@ SvgNode.prototype = {
 
 
     replaceChild: function ( elem, replaceElem ) {
-        var index = utils.getElementIndex( elem, this.children );
+        var index = utils.getElementIndex( elem, this._children );
         if ( index === -1 ) {
             return;
         }
-        this.children.splice( index, 1, replaceElem ); 
+        this._children.splice( index, 1, replaceElem ); 
     },
 
     /*
@@ -86,7 +86,27 @@ SvgNode.prototype = {
     appendChild: function ( elem ) {
         this.removeChild( elem ); // remove any old instances
         elem.parentNode = this;
-        this.children.push( elem );
+        this._children.push( elem );
+    },
+
+    /*
+        SvgNode::_removeTextNodes - a utility to remove text nodes from array
+        params
+            node { SvgNode } - a node to test to see if its a text node
+    */
+
+    _removeTextNodes: function ( node ) {
+        return !!node.tagName;
+    },
+    
+    /*
+        SvgNode::children [ getter ]
+        returns 
+            array of nodes that are not text nodes
+    */
+
+    get children () {
+        return this._children.filter( this._removeTextNodes );
     },
 
     /*
@@ -96,7 +116,7 @@ SvgNode.prototype = {
     */
 
     get firstChild ( ) {
-        return this.children[ 0 ];
+        return this._children[ 0 ];
     },
 
     /*
@@ -111,7 +131,7 @@ SvgNode.prototype = {
             ' ' + 
             utils.objToAttributes( this._attributes || {} ) + 
             '>' + 
-            this.children.map( utils.mapElementsToHTML ).join('') +
+            this._children.map( utils.mapElementsToHTML ).join('') +
             '</' +
             this.tagName +
             '>';
@@ -124,7 +144,7 @@ SvgNode.prototype = {
     */
 
     toText: function( ) {
-        return this.children.map( utils.mapElementsToText ).join('');
+        return this._children.map( utils.mapElementsToText ).join('');
     },
 
     /*
@@ -187,7 +207,7 @@ SvgNode.prototype = {
     */
 
     get innerHTML () {
-        return this.children.map( utils.mapElementsToHTML ).join('');
+        return this._children.map( utils.mapElementsToHTML ).join('');
     },
 
     /*
@@ -200,6 +220,7 @@ SvgNode.prototype = {
         return this.toText();
     },
 
+
     /*
         SvgNode::innerText [ setter ]
         params
@@ -208,8 +229,8 @@ SvgNode.prototype = {
     */
 
     set innerText ( value ) {
-        this.children.length = 0; // empty array
-        this.children.push( new TextNode( value, {
+        this._children.length = 0; // empty array
+        this._children.push( new TextNode( value, {
             unsafe: this.tagName === 'style' 
         } ) ); // style tags need no escape
     }
