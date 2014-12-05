@@ -48,5 +48,11 @@ methods._eachTag = function _eachTag( tag ) {
 };
 
 methods.parse = function( svg ) {
-    return parser.parse( svg ).map( _eachTag );
+    var parsedSVG;
+    try {
+        parsedSVG = parser.parse( svg );
+    } catch ( e ) {
+        return null;
+    }
+    return parsedSVG.map( _eachTag );
 };
