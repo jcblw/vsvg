@@ -139,12 +139,20 @@ function parse( xml ) {
         text,
         index,
         prevTag,
+        prevLength,
         closed,
         tagName,
         tag;
 
-
     while ( xml ) { // we carve away at the xml variable
+
+        // this checks to see if the previous string length is same as 
+        // the current string length
+        if ( xml.length === prevLength ) {
+            throw new Error( 'Failed to parse SVG at chars: ' + xml.substring( 0, 5 ) );
+        }
+        // set prevLength
+        prevLength = xml.length;
 
         xml = xml.trim(); // there is some issues with open tag if this is not done
 
