@@ -84,5 +84,8 @@ test( 'testing parser::parse', function( t ) {
     t.equals( tree[ 0 ].children[ 1 ].tagName, 'polygon', 'the nested self closing tag is correct' );
     t.equals( tree[ 0 ].children[ 2 ].children[ 0 ].tagName, 'line', 'the nested, nest self closing tag is correct' );
 
+    // errors
+    t.throws( parser.parse.bind( parser, '<<foo>>' ), /Failed to parse SVG/, 'If parse fails to parse svg an error is thrown' );
+
     t.end();
 } );
