@@ -22,7 +22,7 @@ methods._eachTag = function _eachTag( tag ) {
  
     var elem;
 
-    if ( tag.tagName ) {
+    if ( tag.tagName && methods[ tag.tagName ] ) {
 
         elem = methods[ tag.tagName ]( tag.attributes );
         if ( elem.children ) {    
@@ -44,7 +44,7 @@ methods._eachTag = function _eachTag( tag ) {
         return elem;
     }
 
-    return tag.text;
+    return tag.text || '';
 };
 
 methods.parse = function( svg ) {
