@@ -168,6 +168,21 @@ test( 'testing element::toHTML', function( t ) {
     t.end();
 } );
 
+test( 'testing element::innerHTML setter', function( t ) {
+    var svg = vsvg.svg({
+            version: '1.1'
+        });
+
+    svg.innerHTML = '<g foo="bar"><line /><line /></g>';
+
+    t.equals( svg.children.length, 1, 'svg gets one child from innerHTML' );
+    t.equals( svg.children[ 0 ].tagName, 'g', 'svg\'s first child should be a group tag' );
+    t.equals( svg.children[ 0 ].children.length, 2, 'group should have two children' );
+    t.equals( svg.children[ 0 ].children[ 1 ].tagName, 'line', 'group should be lines' );
+
+    t.end();
+} );
+
 test( 'testing element::toText', function( t ) {
     var svg = vsvg.svg({
             version: '1.1'
