@@ -214,6 +214,17 @@ SvgNode.prototype = {
     },
 
     /*
+        SvgNode::innerHTML [ setter ]
+        params 
+            html { String } - compiled version of element's children
+    */
+
+    set  innerHTML ( html ) {
+        var vsvg = require( '../' ); // defer require so everything is loaded
+        this._children = vsvg.parse( html ); 
+    },
+
+    /*
         SvgNode::innerText [ getter ]
         returns 
             html { String } - current does the exact same thing as innerHTML
