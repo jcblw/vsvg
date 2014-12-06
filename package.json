@@ -1,6 +1,6 @@
 {
   "name": "vsvg",
-  "version": "1.6.4",
+  "version": "1.7.0",
   "description": "A minimal implementation of a vdom that allows for quick server or client side rendering of svg's",
   "main": "index.js",
   "scripts": {
