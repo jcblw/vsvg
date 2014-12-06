@@ -46,6 +46,10 @@ exports.objToStyles = function objToStyles( styles ) {
 exports.styleToObject = function styleToObject( styles ) {
     var ret = { };
 
+    if ( typeof styles === 'object' ) {
+        return styles;
+    }
+
     styles.split( ';' ).map( keyVal ).forEach( addToReturn );
 
     function addToReturn ( keyval ) {
@@ -74,7 +78,9 @@ exports.objToAttributes = function objToAttributes( attributes ) {
         value;
     for( var attr in attributes ) {
         value = attr === 'style' ? objToStyles( attributes[ attr ] ) : attributes[ attr ];
-        ret += attr + '="' + value + '" ';
+        if ( attr !== 'style' || value ) {
+            ret += attr + '="' + value + '" ';
+        }
     }
     return ret;
 };
