@@ -20,6 +20,15 @@ test( 'testing objToStyles', function( t ) {
     t.end();
 } );
 
+test( 'testing styleToObject', function( t ) {
+    var styles = utils.styleToObject( 'color:white;foo:bar;');
+
+    t.equals( typeof styles, 'object', 'deccompilied styles are an object' );
+    t.equals( styles.color, 'white', 'style declaration is correct' );
+    t.equals( styles.foo, 'bar', 'style declaration is correct' );
+    t.end();
+} );
+
 test( 'testing objToAttributes', function( t ){
     var attributes = utils.objToAttributes({
         width: '100%'
