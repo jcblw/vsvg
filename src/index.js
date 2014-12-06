@@ -3,7 +3,7 @@
 
 var tags = require( './tags' ),
     SvgNode = require( './svgNode' ),
-    parser = require( './parser' ),
+    parser = require( 'vsvg-parser' ),
     methods = {};
 
 /*

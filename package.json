@@ -29,5 +29,8 @@
     "faucet": "0.0.1",
     "jshint": "^2.5.10",
     "tape": "^3.0.3"
+  },
+  "dependencies": {
+    "vsvg-parser": "^0.2.0"
   }
 }
