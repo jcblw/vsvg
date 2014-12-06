@@ -36,6 +36,29 @@ exports.objToStyles = function objToStyles( styles ) {
 };
 
 /*
+    styleToObject - decompilies key:value to { key: value };
+    params
+        styles { String } - compiled sting with css declarations
+    retruns
+        ret { Object } - object of style declarations
+*/
+
+exports.styleToObject = function styleToObject( styles ) {
+    var ret = { };
+
+    styles.split( ';' ).map( keyVal ).forEach( addToReturn );
+
+    function addToReturn ( keyval ) {
+        ret[ keyval[ 0 ] ] = keyval[ 1 ];
+    }
+
+    function keyVal( str ) {
+        return str.trim().split( ':' );
+    }
+    return ret;
+};
+
+/*
     objToAttribute - compiles { key: value } to key="value"
     params
         attributes { Object } - object of attribute declarations

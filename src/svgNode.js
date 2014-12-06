@@ -24,11 +24,14 @@ function SvgNode( tagName, attributes ) {
         return new SvgNode( tagName, attributes );
     }
 
+    attributes = Object.create( attributes || {} );
+
     this.guid = utils.guid();
     this.tagName = tagName;
     this._children = [];
-    this._attributes = Object.create( attributes || {} );
-    this.styles = {};
+    this.styles = attributes.style ? utils.styleToObject( attributes.style ) : {};
+    attributes.style = this.styles;
+    this._attributes = attributes;
 }
 
 SvgNode.prototype = {
