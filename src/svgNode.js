@@ -88,9 +88,9 @@ SvgNode.prototype = {
             return;
         }
         this._children.splice( index, 1, replaceElem ); 
-        // if ( this._node && elem._node && replaceElem._node ) {
-        //     this._node.replaceChild( elem._node, replaceElem._node );
-        // }
+        if ( this._node && elem._node && replaceElem._node ) {
+            this._node.replaceChild( elem._node, replaceElem._node );
+        }
     },
 
     /*
@@ -243,7 +243,7 @@ SvgNode.prototype = {
 
         if ( this._node ) {
             this._node.innerHTML = html;
-            this.children = vsvg.mount( this._node ).children;
+            this._children = vsvg.mount( this._node ).children;
         }
         else {
             this._children = vsvg.parse( html ); 
