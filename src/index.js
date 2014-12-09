@@ -17,6 +17,18 @@ module.exports = ( function() {
     return methods;
 }( ) );
 
+
+/*
+    vsvg::_eachTag - utility to loop through the children of results of a parsed svg 
+    string to turn the structure into vsvg tags.
+
+    params
+        tag { Object } - a tag object returned from parser.parse
+
+    returns
+        elem { Object } - a svgNode or textNode
+*/
+
 var _eachTag =
 methods._eachTag = function _eachTag( tag ) {
  
@@ -47,6 +59,17 @@ methods._eachTag = function _eachTag( tag ) {
     return tag.text || '';
 };
 
+/*
+    vsvg::parse - A wrapper around parser.parse to create vsvg Elements
+    out of the return of parser.parse
+
+    params
+        svg { String } - a compiled string version of a svg to be parsed
+
+    returns 
+        tags { Array } - an array of svgNodes
+*/
+var parse =
 methods.parse = function( svg ) {
     var parsedSVG;
     try {
@@ -55,4 +78,44 @@ methods.parse = function( svg ) {
         return null;
     }
     return parsedSVG.map( _eachTag );
+};
+
+/*
+    vsvg::_addNodeToVNode - adds regular DOM node to virtual node to allow for
+    method proxing to actual dom nodes. Als o recusivly jumps into children and 
+    attempts to add those nodes as well.
+
+    params 
+        node { Object } - a DOM node
+        vNode { object } - a virtual svgNode
+*/
+
+var addNodeToVNode =
+methods._addNodeToVNode = function( node, vNode ) {
+    
+    function eachChild( _vNode, index ) {
+        addNodeToVNode( node.children[ index ], _vNode ); // recursivly jump down tree
+    }
+
+    vNode.children.forEach( eachChild ); // loop through all the children
+    vNode._node = node;// attach node to vNode
+};
+
+/*
+    vsvg::mount - mounts to a actual dom node and adds children  dom nodes to virtual tree
+    as well.
+
+    params 
+        el { Object } - an entry point DOM node
+
+    returns
+        elem { Object } - a virtual representation of the DOM node
+*/
+
+methods.mount = function( el ) {
+    var svg = el.outerHTML,
+        tagTree = parse( svg );
+
+    addNodeToVNode( el, tagTree[ 0 ] ); // start walking the parsed tree 
+    return tagTree[ 0 ];
 };

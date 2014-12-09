@@ -2,7 +2,8 @@
 'use strict';
 
 var utils = require( './utils' ),
-    TextNode = require( './textNode' );
+    TextNode = require( './textNode' ),
+    namespace = 'http://www.w3.org/2000/svg';
 
 module.exports = SvgNode;
 
@@ -32,6 +33,9 @@ function SvgNode( tagName, attributes ) {
     this.styles = attributes.style ? utils.styleToObject( attributes.style ) : {};
     attributes.style = this.styles;
     this._attributes = attributes;
+    if ( typeof document === 'object' ) { // auto create element if in client
+        this._node = document.createElementNS( namespace, tagName );
+    }
 }
 
 SvgNode.prototype = {
@@ -47,6 +51,9 @@ SvgNode.prototype = {
         var index = utils.getElementIndex( refElem, this._children );
         this.removeChild( elem ); // this needs to be revised to be more like normal html spec
         this._children.splice( index, 0, elem );
+        if ( this._node && elem._node && refElem._node ) {
+            this._node.insertBefore( elem._node, refElem._node );
+        }
     },
 
     /*
@@ -62,6 +69,9 @@ SvgNode.prototype = {
             return;
         }
         this._children.splice( index, 1 ); 
+        if ( this._node && elem._node ) {
+            this._node.removeChild( elem._node );
+        }
     },
 
     /*
@@ -78,6 +88,9 @@ SvgNode.prototype = {
             return;
         }
         this._children.splice( index, 1, replaceElem ); 
+        // if ( this._node && elem._node && replaceElem._node ) {
+        //     this._node.replaceChild( elem._node, replaceElem._node );
+        // }
     },
 
     /*
@@ -90,6 +103,9 @@ SvgNode.prototype = {
         this.removeChild( elem ); // remove any old instances
         elem.parentNode = this;
         this._children.push( elem );
+        if ( this._node && elem._node ) {
+            this._node.appendChild( elem._node );
+        }
     },
 
     /*
@@ -171,6 +187,9 @@ SvgNode.prototype = {
 
     setAttribute: function( key, value ) {
         this._attributes[ key ] = value;
+        if ( this._node ) {
+            this._node.setAttribute( key, value );
+        }
     },
 
     /*
@@ -221,7 +240,14 @@ SvgNode.prototype = {
 
     set  innerHTML ( html ) {
         var vsvg = require( '../' ); // defer require so everything is loaded
-        this._children = vsvg.parse( html ); 
+
+        if ( this._node ) {
+            this._node.innerHTML = html;
+            this.children = vsvg.mount( this._node ).children;
+        }
+        else {
+            this._children = vsvg.parse( html ); 
+        }
     },
 
     /*
@@ -247,5 +273,8 @@ SvgNode.prototype = {
         this._children.push( new TextNode( value, {
             unsafe: this.tagName === 'style' 
         } ) ); // style tags need no escape
+        if ( this._node ) {
+            this._node.innerText = value;
+        }
     }
 };
