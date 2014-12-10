@@ -4,9 +4,12 @@
   "description": "A minimal implementation of a vdom that allows for quick server or client side rendering of svg's",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && faucet",
+    "test": "npm run lint && npm run servertest && npm run clienttest",
+    "clienttest": "browserify test/*.js | tape-run -b firefox",
+    "servertest": "faucet",
     "lint": "jshint ./src/*",
-    "dist": "npm test && browserify index.js -o dist/vsvg.js"
+    "build": "browserify index.js -o dist/vsvg.js",
+    "dist": "npm test && npm run build"
   },
   "repository": {
     "type": "git",
@@ -28,7 +31,8 @@
     "browserify": "^6.3.2",
     "faucet": "0.0.1",
     "jshint": "^2.5.10",
-    "tape": "^3.0.3"
+    "tape": "^3.0.3",
+    "tape-run": "^0.3.0"
   },
   "dependencies": {
     "vsvg-parser": "^0.2.0"
