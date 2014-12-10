@@ -89,7 +89,7 @@ SvgNode.prototype = {
         }
         this._children.splice( index, 1, replaceElem ); 
         if ( this._node && elem._node && replaceElem._node ) {
-            this._node.replaceChild( elem._node, replaceElem._node );
+            this._node.replaceChild( replaceElem._node, elem._node );
         }
     },
 
