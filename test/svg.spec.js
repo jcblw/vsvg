@@ -67,6 +67,7 @@ test( 'testing element::replaceChild', function( t ) {
 
     svg.appendChild( defs );
     svg.appendChild( group );
+
     svg.replaceChild( group, group2 );
 
     t.equals( svg.children.length, 2, 'svg has two child elements' );
@@ -173,7 +174,7 @@ test( 'testing element::innerHTML setter', function( t ) {
             version: '1.1'
         });
 
-    svg.innerHTML = '<g foo="bar"><line /><line /></g>';
+    svg.innerHTML = '<g foo="bar"><line></line><line></line></g>';
 
     t.equals( svg.children.length, 1, 'svg gets one child from innerHTML' );
     t.equals( svg.children[ 0 ].tagName, 'g', 'svg\'s first child should be a group tag' );
