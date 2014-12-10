@@ -8,74 +8,18 @@ module.exports = vsvg;
 if ( typeof window === 'object' ) {
     window.vsvg = vsvg;
 }
-},{"./src/":2}],2:[function(require,module,exports){
-
+},{"./src/":3}],2:[function(require,module,exports){
 'use strict';
 
-var tags = require( './tags' ),
-    SvgNode = require( './svgNode' ),
-    parser = require( './parser' ),
-    methods = {};
-
-/*
-    runs and returns an object with all the tagNames eg. vsvg.style()
-*/
-
-module.exports = ( function() {
-    tags.forEach( function( tagName ) {
-        methods[ tagName ] = SvgNode.bind( null, tagName );
-    } );
-    return methods;
-}( ) );
-
-var _eachTag =
-methods._eachTag = function _eachTag( tag ) {
- 
-    var elem;
-
-    if ( tag.tagName ) {
-
-        elem = methods[ tag.tagName ]( tag.attributes );
-        if ( elem.children ) {    
-
-            for( var i = 0; i < tag.children.length; i += 1 ) {
-
-                var _elem = _eachTag( tag.children[ i ] );
-
-                if ( typeof _elem === 'string' ) {
-
-                    elem.innerText = _elem;
-                } else {
-
-                    elem.appendChild( _elem );
-                }
-            }
-        }
-
-        return elem;
-    }
-
-    return tag.text;
-};
-
-methods.parse = function( svg ) {
-    var parsedSVG;
-    try {
-        parsedSVG = parser.parse( svg );
-    } catch ( e ) {
-        return null;
-    }
-    return parsedSVG.map( _eachTag );
-};
-},{"./parser":3,"./svgNode":4,"./tags":5}],3:[function(require,module,exports){
-'use strict';
-
-var startTag = /^<([-A-Za-z0-9_]+)(.*?)(\/?)>/g, // match opening tag
-    endTag = /<\/([-A-Za-z0-9_]+)[^>]*>/, // this just matches the first one
-    attr = /([-A-Za-z0-9_]+)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g, // match tag attributes
-    utils = require( './utils' ); 
+var startTag = /^<([-A-Za-z0-9_:]+)(.*?)(\/?)>/g, // match opening tag
+    endTag = /<\/([-A-Za-z0-9_:]+)[^>]*>/, // this just matches the first one
+    attr = /([-A-Za-z0-9_:]+)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g; // match tag attributes
 
 exports.parse = parse;
+
+function makeArray( arr ) {
+    return Array.prototype.slice.call( arr, 0 );
+}
 
 /*
     getAttributes - turns an array of attributes into a key value object
@@ -154,7 +98,7 @@ exports.createTree = function createTree( tags ) {
     var _tags = [];
 
     function getArray( position, arr ) {
-        var _position = utils.makeArray( position );
+        var _position = makeArray( position );
         if ( _position.length === 1 ) {
             return arr;
         }
@@ -202,7 +146,7 @@ function parse( xml ) {
     xml = xml.replace( /(\r\n|\n|\r)/gm, '' ); // remove all line breaks
 
     var tags = [],
-        position = [ 0 ], // initial position
+        position = [ -1 ], // initial position
         openTag, 
         attributes,
         end,
@@ -269,9 +213,12 @@ function parse( xml ) {
                 position[ tags[ tag.inside ].position.length ] += 1;
                 position = position.slice( 0, tags[ tag.inside ].position.length + 1 );
                 // eg. [ 0, 0, 1 ] this is a map of where this tag should be at
+            } else {
+                position[ 0 ] += 1;
             }
 
-            tag.position = utils.makeArray( position );
+
+            tag.position = makeArray( position );
             tags.push( tag ); // push the tag
 
         }
@@ -284,12 +231,135 @@ function parse( xml ) {
 
     return createTree( tags ); // convert flat array to tree
 }
-},{"./utils":7}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
+
+'use strict';
+
+var tags = require( './tags' ),
+    SvgNode = require( './svgNode' ),
+    parser = require( 'vsvg-parser' ),
+    methods = {};
+
+/*
+    runs and returns an object with all the tagNames eg. vsvg.style()
+*/
+
+module.exports = ( function() {
+    tags.forEach( function( tagName ) {
+        methods[ tagName ] = SvgNode.bind( null, tagName );
+    } );
+    return methods;
+}( ) );
+
+
+/*
+    vsvg::_eachTag - utility to loop through the children of results of a parsed svg 
+    string to turn the structure into vsvg tags.
+
+    params
+        tag { Object } - a tag object returned from parser.parse
+
+    returns
+        elem { Object } - a svgNode or textNode
+*/
+
+var _eachTag =
+methods._eachTag = function _eachTag( tag ) {
+ 
+    var elem;
+
+    if ( tag.tagName && methods[ tag.tagName ] ) {
+
+        elem = methods[ tag.tagName ]( tag.attributes );
+        if ( elem.children ) {    
+
+            for( var i = 0; i < tag.children.length; i += 1 ) {
+
+                var _elem = _eachTag( tag.children[ i ] );
+
+                if ( typeof _elem === 'string' ) {
+
+                    elem.innerText = _elem;
+                } else {
+
+                    elem.appendChild( _elem );
+                }
+            }
+        }
+
+        return elem;
+    }
+
+    return tag.text || '';
+};
+
+/*
+    vsvg::parse - A wrapper around parser.parse to create vsvg Elements
+    out of the return of parser.parse
+
+    params
+        svg { String } - a compiled string version of a svg to be parsed
+
+    returns 
+        tags { Array } - an array of svgNodes
+*/
+var parse =
+methods.parse = function( svg ) {
+    var parsedSVG;
+    try {
+        parsedSVG = parser.parse( svg );
+    } catch ( e ) {
+        return null;
+    }
+    return parsedSVG.map( _eachTag );
+};
+
+/*
+    vsvg::_addNodeToVNode - adds regular DOM node to virtual node to allow for
+    method proxing to actual dom nodes. Als o recusivly jumps into children and 
+    attempts to add those nodes as well.
+
+    params 
+        node { Object } - a DOM node
+        vNode { object } - a virtual svgNode
+*/
+
+var addNodeToVNode =
+methods._addNodeToVNode = function( node, vNode ) {
+    
+    function eachChild( _vNode, index ) {
+        addNodeToVNode( node.children[ index ], _vNode ); // recursivly jump down tree
+    }
+
+    vNode.children.forEach( eachChild ); // loop through all the children
+    vNode._node = node;// attach node to vNode
+};
+
+/*
+    vsvg::mount - mounts to a actual dom node and adds children  dom nodes to virtual tree
+    as well.
+
+    params 
+        el { Object } - an entry point DOM node
+
+    returns
+        elem { Object } - a virtual representation of the DOM node
+*/
+
+methods.mount = function( el ) {
+    var svg = el.outerHTML,
+        tagTree = parse( svg );
+
+    addNodeToVNode( el, tagTree[ 0 ] ); // start walking the parsed tree 
+    return tagTree[ 0 ];
+};
+},{"./svgNode":4,"./tags":5,"vsvg-parser":2}],4:[function(require,module,exports){
 
 'use strict';
 
 var utils = require( './utils' ),
-    TextNode = require( './textNode' );
+    TextNode = require( './textNode' ),
+    namespace = 'http://www.w3.org/2000/svg';
 
 module.exports = SvgNode;
 
@@ -311,11 +381,17 @@ function SvgNode( tagName, attributes ) {
         return new SvgNode( tagName, attributes );
     }
 
+    attributes = Object.create( attributes || {} );
+
     this.guid = utils.guid();
     this.tagName = tagName;
     this._children = [];
-    this._attributes = Object.create( attributes || {} );
-    this.styles = {};
+    this.styles = attributes.style ? utils.styleToObject( attributes.style ) : {};
+    attributes.style = this.styles;
+    this._attributes = attributes;
+    if ( typeof document === 'object' ) { // auto create element if in client
+        this._node = document.createElementNS( namespace, tagName );
+    }
 }
 
 SvgNode.prototype = {
@@ -331,6 +407,9 @@ SvgNode.prototype = {
         var index = utils.getElementIndex( refElem, this._children );
         this.removeChild( elem ); // this needs to be revised to be more like normal html spec
         this._children.splice( index, 0, elem );
+        if ( this._node && elem._node && refElem._node ) {
+            this._node.insertBefore( elem._node, refElem._node );
+        }
     },
 
     /*
@@ -346,6 +425,9 @@ SvgNode.prototype = {
             return;
         }
         this._children.splice( index, 1 ); 
+        if ( this._node && elem._node ) {
+            this._node.removeChild( elem._node );
+        }
     },
 
     /*
@@ -362,6 +444,9 @@ SvgNode.prototype = {
             return;
         }
         this._children.splice( index, 1, replaceElem ); 
+        if ( this._node && elem._node && replaceElem._node ) {
+            this._node.replaceChild( replaceElem._node, elem._node );
+        }
     },
 
     /*
@@ -374,6 +459,9 @@ SvgNode.prototype = {
         this.removeChild( elem ); // remove any old instances
         elem.parentNode = this;
         this._children.push( elem );
+        if ( this._node && elem._node ) {
+            this._node.appendChild( elem._node );
+        }
     },
 
     /*
@@ -455,6 +543,9 @@ SvgNode.prototype = {
 
     setAttribute: function( key, value ) {
         this._attributes[ key ] = value;
+        if ( this._node ) {
+            this._node.setAttribute( key, value );
+        }
     },
 
     /*
@@ -498,6 +589,24 @@ SvgNode.prototype = {
     },
 
     /*
+        SvgNode::innerHTML [ setter ]
+        params 
+            html { String } - compiled version of element's children
+    */
+
+    set  innerHTML ( html ) {
+        var vsvg = require( '../' ); // defer require so everything is loaded
+
+        if ( this._node ) {
+            this._node.innerHTML = html;
+            this._children = vsvg.mount( this._node ).children;
+        }
+        else {
+            this._children = vsvg.parse( html ); 
+        }
+    },
+
+    /*
         SvgNode::innerText [ getter ]
         returns 
             html { String } - current does the exact same thing as innerHTML
@@ -520,9 +629,12 @@ SvgNode.prototype = {
         this._children.push( new TextNode( value, {
             unsafe: this.tagName === 'style' 
         } ) ); // style tags need no escape
+        if ( this._node ) {
+            this._node.innerText = value;
+        }
     }
 };
-},{"./textNode":6,"./utils":7}],5:[function(require,module,exports){
+},{"../":1,"./textNode":6,"./utils":7}],5:[function(require,module,exports){
 
 'use strict';
 
@@ -676,6 +788,33 @@ exports.objToStyles = function objToStyles( styles ) {
 };
 
 /*
+    styleToObject - decompilies key:value to { key: value };
+    params
+        styles { String } - compiled sting with css declarations
+    retruns
+        ret { Object } - object of style declarations
+*/
+
+exports.styleToObject = function styleToObject( styles ) {
+    var ret = { };
+
+    if ( typeof styles === 'object' ) {
+        return styles;
+    }
+
+    styles.split( ';' ).map( keyVal ).forEach( addToReturn );
+
+    function addToReturn ( keyval ) {
+        ret[ keyval[ 0 ] ] = keyval[ 1 ];
+    }
+
+    function keyVal( str ) {
+        return str.trim().split( ':' );
+    }
+    return ret;
+};
+
+/*
     objToAttribute - compiles { key: value } to key="value"
     params
         attributes { Object } - object of attribute declarations
@@ -691,7 +830,9 @@ exports.objToAttributes = function objToAttributes( attributes ) {
         value;
     for( var attr in attributes ) {
         value = attr === 'style' ? objToStyles( attributes[ attr ] ) : attributes[ attr ];
-        ret += attr + '="' + value + '" ';
+        if ( attr !== 'style' || value ) {
+            ret += attr + '="' + value + '" ';
+        }
     }
     return ret;
 };
