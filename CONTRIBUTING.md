@@ -6,7 +6,7 @@ First of all thanks for you consideration. There is a couple steps to take.
 
 First things first you will need a copy of the code using [git](http://git-scm.com/)&amp;s clone command.
 
-    $ git clone https://github.com/[username]/[project_name].git
+    $ git clone https://github.com/jcblw/vsvg.git
 
 Next make sure your code has all the dependecies it needs to run properly using [npm](https://www.npmjs.com/) install in the projects directory.
 
@@ -26,7 +26,7 @@ This will test your code against exsisting functionality to make sure your new c
 
 In the root directory of this project, and the going to your other project and running.
 
-    $ npm link [project_name]
+    $ npm link vsvg
 
 ### Submiting Pull Request
 
