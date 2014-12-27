@@ -391,6 +391,15 @@ function SvgNode( tagName, attributes ) {
     this._attributes = attributes;
     if ( typeof document === 'object' ) { // auto create element if in client
         this._node = document.createElementNS( namespace, tagName );
+        for ( var attribute in attributes ) {
+            var value = attributes[ attribute ];
+
+            if ( attribute === 'style' ) {
+                value = utils.objToStyles( value );
+            }
+
+            this._node.setAttribute( attribute, value );
+        }
     }
 }
 
