@@ -1,13 +1,20 @@
 var test = require( 'tape' ),
-    vsvg = require( '../src/' );
+    vsvg = require( '../src/' ),
+    SvgNode = require( '../src/svgNode' );
 
 test( 'testing element creation', function( t ) {
-    var svg = vsvg.svg();
+    var path = vsvg.path(),
+        g = vsvg.path(),
+        svg = vsvg.svg( { 
+            xmlns: 'http://www.w3.org/2000/svg' 
+        }, g, path );
     // test out some of the properties of new element
     t.equals( typeof svg.guid, 'string', 'property guid is a string' );
     t.equals( !!svg.parentNode, false, 'property parentNode is not set' );
     t.equals( Array.isArray( svg.children ), true, 'property children is an array' );
-    t.equals( svg.children.length, 0, 'property children startes empty' );
+    t.equals( svg.children.length, 2, 'property children startes empty' );
+    t.equals( svg.children[ 0 ].guid, g.guid, 'the element is passed in the second argument is the appended to the children in the correct position' );
+    t.equals( svg.children[ 1 ].guid, path.guid, 'the element is passed in the third argument is the appended to the children in the correct position' );
     t.equals( typeof svg.insertBefore, 'function', 'property insertBefore is a function' );
     t.equals( typeof svg.appendChild, 'function', 'property appendChild is a function' );
     t.equals( typeof svg.removeChild, 'function', 'property removeChild is a function' );
@@ -15,6 +22,7 @@ test( 'testing element creation', function( t ) {
     t.equals( typeof svg.getAttribute, 'function', 'property getAttribute is a function' );
     t.equals( typeof svg.setAttribute, 'function', 'property setAttribute is a function' );
     t.equals( typeof svg.attributes, 'object', 'property attributes is an object' );
+    t.equals( svg.attributes.xmlns, 'http://www.w3.org/2000/svg', 'attributes that are passed in the first argument is applied to the attributes object' ); 
     t.equals( typeof svg.outerHTML, 'string', 'property outerHTML is a string' );
     t.equals( typeof svg.innerHTML, 'string', 'property innerHTML is a string' );
     t.end();
@@ -229,4 +237,11 @@ test( 'testing vsvg::_eachTag', function( t ) {
     t.equals( elem.children.length, 1, 'return from _eachTag has the correct amount of children' );
     t.end();
 
+} );
+
+test( 'testings SvgNode.isNode', function( t ) {
+    var svg = vsvg.svg();
+    t.equals( SvgNode.isNode( svg ), true, 'SvgNode.isNode will return true id a SvgNode is given in the first parameter' );
+    t.equals( SvgNode.isNode( {} ), false,  'SvgNode.isNode will return true id a SvgNode is given in the first parameter' );
+    t.end();
 } );
