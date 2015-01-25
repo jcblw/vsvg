@@ -153,6 +153,6 @@ exports.escapeHTML = function escapeHTML( html ) {
         arr { Array } - new Array
 */
 
-exports.makeArray = function makeArray( arr ) {
-    return Array.prototype.slice.call( arr, 0 );
+exports.makeArray = function makeArray( arr, index ) {
+    return Array.prototype.slice.call( arr, index || 0 );
 };

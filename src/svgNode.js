@@ -19,14 +19,14 @@ module.exports = SvgNode;
     TODO make toHTML serve back self closing tags 
 */
 
-function SvgNode( tagName, attributes ) {
+function SvgNode( tagName, attributes, vnodes ) {
 
+    var rest = utils.makeArray( arguments, 2 );
     if ( !( this instanceof SvgNode ) ) { // magical invocation
-        return new SvgNode( tagName, attributes );
+        return new SvgNode( tagName, attributes, rest );
     }
-
+    
     attributes = Object.create( attributes || {} );
-
     this.guid = utils.guid();
     this.tagName = tagName;
     this._children = [];
@@ -45,7 +45,21 @@ function SvgNode( tagName, attributes ) {
             this._node.setAttribute( attribute, value );
         }
     }
+
+    if ( Array.isArray( vnodes ) && vnodes.length  ) {
+        vnodes.filter( SvgNode.isNode ).forEach( this.appendChild.bind( this ) );
+    }
 }
+
+/*
+    SvgNode.isNode -  checks to see if node is a instance of SvgNode
+    params
+        vnode { Mixed } - a value to test against the instance of SvgNode
+ */
+
+SvgNode.isNode = function( vnode ) {
+    return vnode instanceof SvgNode;
+};
 
 SvgNode.prototype = {
 
