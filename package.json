@@ -35,6 +35,6 @@
     "tape-run": "^0.3.0"
   },
   "dependencies": {
-    "vsvg-parser": "^0.2.0"
+    "vsvg-parser": "^0.3.1"
   }
 }
