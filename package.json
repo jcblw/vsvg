@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/jcblw/vsvg",
   "devDependencies": {
-    "browserify": "^14.0.0",
+    "browserify": "^15.0.0",
     "faucet": "0.0.1",
     "jshint": "^2.5.10",
     "tape": "^4.5.1",
