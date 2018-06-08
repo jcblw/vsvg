@@ -31,7 +31,7 @@
     "browserify": "^16.0.0",
     "faucet": "0.0.1",
     "jshint": "^2.5.10",
-    "tape": "^4.5.1",
+    "tape": "4.9.0",
     "tape-run": "^3.0.0"
   },
   "dependencies": {
